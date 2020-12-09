@@ -64,8 +64,20 @@ class ComplexityReport:
         if not node_names:
             return
         lines = self.file_header(filename)
+        total_cyclomatic = 0
+        total_cognitive = 0
         for node_name in node_names:
+            cyclomatic = latest[node_name].cyclomatic
+            cyclomatic = 0 if cyclomatic is None else cyclomatic
+            total_cyclomatic += cyclomatic
+            cognitive = latest[node_name].cognitive
+            cognitive = 0 if cognitive is None else cognitive
+            total_cognitive += cognitive
             line = self.FMT_SIMPLE.\
-                format(node_name, latest[node_name].cyclomatic, latest[node_name].cognitive)
+                format(node_name, cyclomatic, cognitive)
             lines.append(line)
+        lines.append('=' * len(filename))
+        line = self.FMT_SIMPLE. \
+            format('Total', total_cyclomatic, total_cognitive)
+        lines.append(line)
         return lines
